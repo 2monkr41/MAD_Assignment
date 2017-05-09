@@ -11,7 +11,7 @@ import android.widget.TextView;
 import android.widget.EditText;
 import android.view.View.OnClickListener;
 
-public class AddPoiActivity extends Activity{
+public class AddPoiActivity extends Activity implements View.OnClickListener{
 
 
 
@@ -20,7 +20,7 @@ public class AddPoiActivity extends Activity{
         super.onCreate(savedInstanceState);
         setContentView(R.layout.add_poi_layout);
         Button b = (Button)findViewById(R.id.btn1);
-        b.setOnClickListener((OnClickListener) this);
+        b.setOnClickListener(this);
     }
 
     public void onClick(View view)
@@ -36,16 +36,11 @@ public class AddPoiActivity extends Activity{
         EditText poiDesc = (EditText)findViewById(R.id.poidescription);
         bundle.putString("com.example.poidescription",poiDesc.getText().toString());
 
-
-
-
-
-
-
         Intent intent = new Intent();
         intent.putExtras(bundle);
         setResult(RESULT_OK,intent);
         finish();
 
     }
+
 }

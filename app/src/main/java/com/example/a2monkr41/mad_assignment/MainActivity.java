@@ -14,20 +14,24 @@ import org.osmdroid.config.Configuration;
 import org.osmdroid.tileprovider.tilesource.TileSourceFactory;
 import org.osmdroid.util.GeoPoint;
 import org.osmdroid.views.MapView;
+import android.widget.Toast;
+import org.osmdroid.views.overlay.ItemizedIconOverlay;
+import org.osmdroid.views.overlay.OverlayItem;
+import java.util.ArrayList;
 
 public class MainActivity extends AppCompatActivity {
 
     MapView mv;
+    ItemizedIconOverlay<OverlayItem> items;
+    ItemizedIconOverlay.OnItemGestureListener<OverlayItem> markerGestureListener;
 
-    /**
-     * Called when the activity is first created.
-     */
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
 
         super.onCreate(savedInstanceState);
 
-        // This line sets the user agent, a requirement to download OSM maps
+
         Configuration.getInstance().load(this, PreferenceManager.getDefaultSharedPreferences(this));
         setContentView(R.layout.activity_main);
 
@@ -36,6 +40,26 @@ public class MainActivity extends AppCompatActivity {
         mv.setBuiltInZoomControls(true);
         mv.getController().setZoom(14);
         mv.getController().setCenter(new GeoPoint(50.9, -1.4));
+
+        markerGestureListener = new ItemizedIconOverlay.OnItemGestureListener<OverlayItem>()
+        {
+            public boolean onItemLongPress(int i, OverlayItem item)
+            {
+                Toast.makeText(MainActivity.this, item.getSnippet(), Toast.LENGTH_SHORT).show();
+                return true;
+            }
+
+            public boolean onItemSingleTapUp(int i, OverlayItem item)
+            {
+                Toast.makeText(MainActivity.this, item.getSnippet(), Toast.LENGTH_SHORT).show();
+                return true;
+            }
+        };
+
+        items = new ItemizedIconOverlay<OverlayItem>(this, new ArrayList<OverlayItem>(), markerGestureListener);
+        OverlayItem solent = new OverlayItem("Solent University", "Main campus of solent university", new GeoPoint(50.907984, -1.400195));
+        items.addItem(solent);
+        mv.getOverlays().add(items);
 
     }
 
@@ -52,9 +76,31 @@ public class MainActivity extends AppCompatActivity {
         {
 
             Intent intent = new Intent(this,AddPoiActivity.class);
-            startActivity(intent);
+            startActivityForResult(intent, 0);
             return true;
         }
         return false;
     }
+
+    protected void onActivityResult(int requestCode,int resultCode,Intent intent)
+    {
+        if(requestCode==0)
+        {
+
+            if (resultCode==RESULT_OK)
+            {
+                Bundle bundle = intent.getExtras();
+                String poiName = bundle.getString("com.example.poiname");
+                String poiType = bundle.getString("com.example.poitype");
+                String poiDDescription = bundle.getString("com.example.poidescription");
+                double lat = mv.getMapCenter().getLatitude();
+                double lon = mv.getMapCenter().getLongitude();
+                OverlayItem item = new OverlayItem(poiName, poiType, poiDDescription, new GeoPoint(lat, lon));
+                items.addItem(item);
+
+                mv.invalidate();
+            }
+        }
+    }
 }
+
