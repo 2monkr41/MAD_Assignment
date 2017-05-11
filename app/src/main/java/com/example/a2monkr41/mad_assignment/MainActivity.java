@@ -1,5 +1,6 @@
 package com.example.a2monkr41.mad_assignment;
 
+import android.content.SharedPreferences;
 import android.os.Environment;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -59,6 +60,8 @@ public class MainActivity extends AppCompatActivity {
                 Toast.makeText(MainActivity.this, item.getSnippet(), Toast.LENGTH_SHORT).show();
                 return true;
             }
+
+
         };
 
         items = new ItemizedIconOverlay<OverlayItem>(this, new ArrayList<OverlayItem>(), markerGestureListener);
@@ -67,6 +70,23 @@ public class MainActivity extends AppCompatActivity {
         mv.getOverlays().add(items);
 
     }
+
+    public void onStart()
+    {
+        super.onStart();
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
+        boolean uploadtoweb = prefs.getBoolean("uploadtoweb", true);
+
+        if(uploadtoweb == true){
+            Toast.makeText(MainActivity.this, "Preference is set", Toast.LENGTH_SHORT).show();
+        }
+        else {
+            Toast.makeText(MainActivity.this, "Preference is not set", Toast.LENGTH_SHORT).show();
+        }
+
+
+    }
+
     public void onDestroy()
     {
             super.onDestroy();
@@ -110,6 +130,11 @@ public class MainActivity extends AppCompatActivity {
                 System.out.println("Error" + e);
                 return true;
             }
+        if (item.getItemId() == R.id.uploadtoweb) {
+            Intent intent = new Intent(this, MyPrefsActivity.class);
+            startActivityForResult(intent, 1);
+            return true;
+        }
 
         return false;
     }

@@ -3,4 +3,5 @@
     xmlns:android="http://schemas.android.com/apk/res/android">
     <item android:id="@+id/choosemap" android:title="@string/AddPoi"/>
     <item android:id="@+id/savefile" android:title="@string/Savefile"/>
+    <item android:id="@+id/uploadtoweb" android:title="@string/Uploadtoweb"/>
 </menu>
