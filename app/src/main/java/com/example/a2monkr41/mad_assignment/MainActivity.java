@@ -1,5 +1,6 @@
 package com.example.a2monkr41.mad_assignment;
 
+import android.os.Environment;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 
@@ -17,6 +18,10 @@ import org.osmdroid.views.MapView;
 import android.widget.Toast;
 import org.osmdroid.views.overlay.ItemizedIconOverlay;
 import org.osmdroid.views.overlay.OverlayItem;
+
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.PrintWriter;
 import java.util.ArrayList;
 
 public class MainActivity extends AppCompatActivity {
@@ -62,6 +67,22 @@ public class MainActivity extends AppCompatActivity {
         mv.getOverlays().add(items);
 
     }
+    public void onDestroy()
+    {
+            super.onDestroy();
+
+        try {
+            PrintWriter pw = new PrintWriter((new FileWriter(Environment.getExternalStorageDirectory().getAbsolutePath() + "/filesave.txt")));
+            for (int i = 0; i < items.size(); i++) {
+                OverlayItem itemm = items.getItem(i);
+                pw.println(itemm.getTitle() + "," + itemm.getSnippet() + "," + itemm.getPoint() + "");
+            }
+            pw.close();
+        } catch (IOException e) {
+            System.out.println("Error" + e);
+
+        }
+    }
 
     public boolean onCreateOptionsMenu(Menu menu)
     {
@@ -70,15 +91,26 @@ public class MainActivity extends AppCompatActivity {
         return true;
     }
 
-    public boolean onOptionsItemSelected(MenuItem item)
-    {
-        if(item.getItemId() == R.id.choosemap)
-        {
+    public boolean onOptionsItemSelected(MenuItem item) {
+        if (item.getItemId() == R.id.choosemap) {
 
-            Intent intent = new Intent(this,AddPoiActivity.class);
+            Intent intent = new Intent(this, AddPoiActivity.class);
             startActivityForResult(intent, 0);
             return true;
         }
+        if (item.getItemId() == R.id.savefile)
+            try {
+                PrintWriter pw = new PrintWriter((new FileWriter(Environment.getExternalStorageDirectory().getAbsolutePath() + "/filesave.txt")));
+                for (int i = 0; i < items.size(); i++) {
+                    OverlayItem itemm = items.getItem(i);
+                    pw.println(itemm.getTitle() + "," + itemm.getSnippet() + "," + itemm.getPoint() + "");
+                }
+                pw.close();
+            } catch (IOException e) {
+                System.out.println("Error" + e);
+                return true;
+            }
+
         return false;
     }
 

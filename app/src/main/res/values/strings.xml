@@ -1,4 +1,5 @@
 <resources>
     <string name="app_name">MAD_Assignment</string>
     <string name="AddPoi">Add point of interest</string>
+    <string name="Savefile">save file</string>
 </resources>
